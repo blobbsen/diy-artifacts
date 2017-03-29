@@ -21,7 +21,6 @@ buildProjectDeps() {
 	PARALLEL_MAKE="-j1" osmo-build-dep.sh libsmpp34
 	osmo-build-dep.sh openggsn
 
-
 	if [ "x$IU" = "x--enable-iu" ]; then
 		osmo-build-dep.sh libasn1c
 		#osmo-build-dep.sh asn1c aper-prefix # only needed for make regen in osmo-iuh
@@ -31,24 +30,24 @@ buildProjectDeps() {
 
 buildProject() {
 
-		set +x
-		echo
-		echo "[INFO] ======================== $project =========================="
-		echo
-		set -x
+	set +x
+	echo
+	echo "[INFO] ======================== $project =========================="
+	echo
+	set -x
 
-		cd "$base/openbsc"
+	cd "$base/openbsc"
 
-		autoreconf --install --force
+	autoreconf --install --force
 
-		./configure --enable-osmo-bsc \
-			--enable-nat "$SMPP" "$MGCP" "$IU" \
-			--enable-vty-tests \
-			--enable-enameternal-tests
+	./configure --enable-osmo-bsc \
+		--enable-nat "$SMPP" "$MGCP" "$IU" \
+		--enable-vty-tests \
+	  --enable-enameternal-tests
 
-		"$MAKE" "$PARALLEL_MAKE"
-		"$MAKE" check || cat-testlogs.sh
-		"$MAKE" distcheck || cat-testlogs.sh
+	"$MAKE" "$PARALLEL_MAKE"
+	"$MAKE" check || cat-testlogs.sh
+	"$MAKE" distcheck || cat-testlogs.sh
 }
 
 artifactName() {

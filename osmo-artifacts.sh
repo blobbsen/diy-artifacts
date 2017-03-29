@@ -64,7 +64,7 @@ archiveArtifact() {
 	cd "$base"
 	tar czf "$1" "deps"
 	generateArtifactHashes "$1"
-  	mkdir -p "$2"
+  mkdir -p "$2"
 	mv -n "$1" "$2"
 }
 
@@ -94,5 +94,6 @@ build() {
   else
   	buildProjectDeps
 	fi
+
   buildProject
 }
