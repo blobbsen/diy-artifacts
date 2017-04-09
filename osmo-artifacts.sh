@@ -26,7 +26,7 @@ getArtifactNameByRemoteRepos() {
 
 fetchOrBuilAndArchiveDeps() {
 	if [ ! -f "$1" ]; then
-		buildProjectDeps
+		buildDeps
 		archiveArtifact "$(getArtifactNameByLocalRepos)" "$2"
 	else
 		fetchArtifact "$1"
@@ -78,6 +78,19 @@ initBuild() {
 	export LD_LIBRARY_PATH="$inst/lib"
 }
 
+buildDeps() {
+	set +x
+	echo
+	echo "[INFO] Compile $project dependencies from source."
+	echo
+	set -x
+
+	mkdir "$deps" || true
+	rm -rf "$inst"
+
+	buildProjectDeps
+}
+
 build() {
 
 	export project="$1"
@@ -92,8 +105,13 @@ build() {
 
     fetchOrBuilAndArchiveDeps "$pathOfNeededArtifact" "$projectArtifactDir"
   else
-  	buildProjectDeps
+  	buildDeps
 	fi
 
+	set +x
+	echo
+	echo "[INFO] ======================== $project =========================="
+	echo
+	set -x
   buildProject
 }

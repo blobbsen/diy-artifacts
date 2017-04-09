@@ -1,16 +1,6 @@
 #!/bin/bash
 
 buildProjectDeps() {
-	# put in wrapper
-	set +x
-	echo
-	echo "[INFO] Compile $project dependencies from source."
-	echo
-	set -x
-	mkdir "$deps" || true
-	rm -rf "$inst"
-	# end put in wrapper
-
 	osmo-build-dep.sh libosmocore "" ac_cv_path_DOXYGEN=false
 	osmo-build-dep.sh libosmo-abis
 	osmo-build-dep.sh libosmo-netif
@@ -26,14 +16,6 @@ buildProjectDeps() {
 }
 
 buildProject() {
-
-	# put in wrapper
-	set +x
-	echo
-	echo "[INFO] ======================== $project =========================="
-	echo
-	set -x
-	# end put in wrapper
 
 	cd "$base/openbsc"
 
