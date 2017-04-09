@@ -1,6 +1,7 @@
 #!/bin/bash
 
 buildProjectDeps() {
+	# put in wrapper
 	set +x
 	echo
 	echo "[INFO] Compile $project dependencies from source."
@@ -8,16 +9,12 @@ buildProjectDeps() {
 	set -x
 	mkdir "$deps" || true
 	rm -rf "$inst"
-
-	if [ "x$IU" = "x--enable-iu" ]; then
-		netif_branch="sysmocom/sctp"
-		sccp_branch="sysmocom/iu"
-	fi
+	# end put in wrapper
 
 	osmo-build-dep.sh libosmocore "" ac_cv_path_DOXYGEN=false
 	osmo-build-dep.sh libosmo-abis
-	osmo-build-dep.sh libosmo-netif "$netif_branch"
-	osmo-build-dep.sh libosmo-sccp "$sccp_branch"
+	osmo-build-dep.sh libosmo-netif
+	osmo-build-dep.sh libosmo-sccp
 	PARALLEL_MAKE="-j1" osmo-build-dep.sh libsmpp34
 	osmo-build-dep.sh openggsn
 
@@ -30,11 +27,13 @@ buildProjectDeps() {
 
 buildProject() {
 
+	# put in wrapper
 	set +x
 	echo
 	echo "[INFO] ======================== $project =========================="
 	echo
 	set -x
+	# end put in wrapper
 
 	cd "$base/openbsc"
 
@@ -52,18 +51,13 @@ buildProject() {
 
 artifactName() {
 
-	if [ "x$IU" = "x--enable-iu" ]; then
-		netif_branch="sysmocom/sctp"
-		sccp_branch="sysmocom/iu"
-	fi
-
 	# $1 represents functions determining artifactName within osmo-artifacts.sh.
 	# Note: it must be a name of a git repository
 	name="$($1 libosmocore)"
 	name="${name}_$($1 libosmo-abis)"
-	name="${name}_$($1 libosmo-netif $netif_branch)"
-	name="${name}_$($1 libosmo-sccp $sccp_branch)"
-	name="${name}_$(PARALLEL_MAKE="-j1" $1 libsmpp34)"
+	name="${name}_$($1 libosmo-netif)"
+	name="${name}_$($1 libosmo-sccp)"
+	name="${name}_$($1 libsmpp34)"
 	name="${name}_$($1 openggsn)"
 
 	if [ "x$IU" = "x--enable-iu" ]; then
