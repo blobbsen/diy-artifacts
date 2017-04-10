@@ -1,8 +1,7 @@
 #!/bin/bash
 
 set -ex
-#source $(pwd)/contrib/osmo-build.sh
-source $(pwd)/contrib/osmo-build.sh
+source osmo-build.sh
 
 genericDeps() {
 

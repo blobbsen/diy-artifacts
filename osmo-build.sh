@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(pwd)/contrib/osmo-artifacts.sh
+source osmo-artifacts.sh
 
 initBuild() {
 	base="$(pwd)"
