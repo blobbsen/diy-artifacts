@@ -39,17 +39,13 @@ build() {
 	export project="$1"
 	initBuild
 
-	if [ "$2" = "useArtifact" ]; then
-		# TODO: think about whether Docker volume would be suitable + envVar
-		artifactStore="/build_bin/artifactStore"
+	# TODO: think about whether Docker volume would be suitable + envVar
+	artifactStore="/build_bin/artifactStore"
 
-  	projectArtifactDir="$artifactStore/$project"
-  	pathOfNeededArtifact="$projectArtifactDir/$(getArtifactNameByRemoteRepos)"
+  projectArtifactDir="$artifactStore/$project"
+  pathOfNeededArtifact="$projectArtifactDir/$(getArtifactNameByRemoteRepos)"
 
-    fetchOrBuilAndArchiveDeps "$pathOfNeededArtifact" "$projectArtifactDir"
-  else
-  	buildDeps
-	fi
+  fetchOrBuilAndArchiveDeps "$pathOfNeededArtifact" "$projectArtifactDir"
 
 	set +x
 	echo
