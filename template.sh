@@ -1,31 +1,30 @@
 #!/bin/bash
 
-buildProjectDeps() {
-	# code to build all dependencies.
+set -ex
+source osmo-build.sh
+
+genericDeps() {
+	# Specify dependencies in the following way:
+	#
+	#	   		x="$($1 libosmocore master ac_cv_path_DOXYGEN=false)"
+	#		  	x="${x}_$(PARALLEL_MAKE=-j1 $1 libosmo-abis)"
+  #				.
+	#				.
+	#
+  #				echo "${x}.tar.gz"
+	#
+	# Note: The following parameter can be adjust within the genericDeps function:
+	#
+	#				x="${x}_$(<PARALLEL_MAKE> $1 <DEPENDENCY> <BRANCH_TO_BUILD> <CFG>"
+  #
+	#				Furthermore, $1 represents the following script/functions:
+	#					- osmo-build-dep.sh 							(osmo-build.sh)
+	#					- getArtifactNameByLocalRepos()   (osmo-artifacts.sh)
+	#					- getArtifactNameByRemoteRepos()  (osmo-artifacts.sh)
 }
 
 buildProject() {
-	# code to build project assuming all dependencies are available.
+	# Necessary commands to build the project.
 }
 
-artifactName() {
-	# $1 represents functions getBranchAndRevBy(Local||Remote)Repo determining
-	# artifactName. These functions live within osmo-artifacts.sh.
-	# Note: $1 must be a name of a git repository
-
-	#example:
-	name="$($1 <REPOSITORY>)" # master is default branch
-	name="${name}_$($1 <REPOSITORY> <BRANCH>)"
-
-	echo "${name}.tar.gz"
-}
-
-set -ex
-. osmo-artifacts.sh
-build <PROJECT> "$1"
-
-# <PROJECT> is used for the project's artifactDir and for several log msgs,
-# probably the project name suits best (e.g. "openbsc", "$(basename $(pwd))" ).
-#
-# "$1" must be "useArtifact" to activate builds fetching/archiving artifacts.
-# This argument should be passed at invocation.
+build <PUT_NAME_OF_PROJECT_HERE>
