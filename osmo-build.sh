@@ -33,12 +33,13 @@ build() {
 
 	# TODO: artifactStore -> envVar
 	artifactStore="/build_bin/artifactStore"
+
   projectArtifactDir="$artifactStore/$project"
   pathOfNeededArtifact="$projectArtifactDir/$(getArtifactNameByRemoteRepos)"
 
   if [ ! -f "$pathOfNeededArtifact" ]; then
     buildDeps
-    archiveArtifact "$(getArtifactNameByLocalRepos)" "$projectArtifactDir"
+    archiveArtifact "$projectArtifactDir"
   else
     fetchArtifact "$pathOfNeededArtifact"
   fi

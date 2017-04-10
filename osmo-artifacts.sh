@@ -30,10 +30,11 @@ archiveArtifact() {
 	set -x
 
 	cd "$base"
-	tar czf "$1" "deps"
-	generateArtifactHashes "$1"
-  mkdir -p "$2"
-	mv -n "$1" "$2"
+	artifact="$(getArtifactNameByLocalRepos)"
+	tar czf "$artifact" "deps"
+	generateArtifactHashes "$artifact"
+  mkdir -p "$artifactDir"
+	mv -n "$artifact" "$artifactDir"
 }
 
 fetchArtifact() {
