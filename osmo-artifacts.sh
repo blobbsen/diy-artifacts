@@ -1,10 +1,12 @@
 #!/bin/bash
 
-getBranchAndRevByRemoteRepo() {
-	# optional branch argument
-	if [ -z "${2+x}" ]; then branch="master"; else branch="$2"; fi
-	rev=$(git ls-remote "https://git.osmocom.org/$1" "refs/heads/$branch")
-	echo "$1.${branch//\//#}.${rev:0:7}"
+getArtifactNameByLocalRepos(){
+	genericDeps "getBranchAndRevByLocalRepo"
+	cd "$base"
+}
+
+getArtifactNameByRemoteRepos() {
+	genericDeps "getBranchAndRevByRemoteRepo"
 }
 
 getBranchAndRevByLocalRepo() {
@@ -14,23 +16,35 @@ getBranchAndRevByLocalRepo() {
 	echo "$1.${branch//\//#}.${rev:0:7}"
 }
 
-getArtifactNameByLocalRepos(){
-	artifactName "getBranchAndRevByLocalRepo"
+getBranchAndRevByRemoteRepo() {
+	if [ -z "${2+x}" ]; then branch="master"; else branch="$2"; fi
+	rev=$(git ls-remote "https://git.osmocom.org/$1" "refs/heads/$branch")
+	echo "$1.${branch//\//#}.${rev:0:7}"
+}
+
+archiveArtifact() {
+	set +x
+	echo
+	echo "[INFO] Archiving artifact to artifactStore."
+	echo
+	set -x
+
 	cd "$base"
+	tar czf "$1" "deps"
+	generateArtifactHashes "$1"
+  mkdir -p "$2"
+	mv -n "$1" "$2"
 }
 
-getArtifactNameByRemoteRepos() {
-	# artifactName needs to be implemented within project specific jenkins.sh!
-	artifactName "getBranchAndRevByRemoteRepo"
-}
+fetchArtifact() {
+  set +x
+  echo
+  echo "[INFO] Fetching artifact from artifactStore."
+  echo
+  set -x
 
-fetchOrBuilAndArchiveDeps() {
-	if [ ! -f "$1" ]; then
-		buildDeps
-		archiveArtifact "$(getArtifactNameByLocalRepos)" "$2"
-	else
-		fetchArtifact "$1"
-	fi
+  generateArtifactHashes "$1"
+  tar xzf "$1" # "$base"
 }
 
 generateArtifactHashes() {
@@ -45,29 +59,7 @@ generateArtifactHashes() {
 	sleep 1
 }
 
-fetchArtifact() {
-  set +x
-  echo
-  echo "[INFO] Fetching artifact from artifactStore."
-  echo
-  set -x
-  generateArtifactHashes "$1"
-  tar xzf "$1" # "$base"
-}
-
-archiveArtifact() {
-	set +x
-	echo
-	echo "[INFO] Archiving artifact to artifactStore."
-	echo
-	set -x
-	cd "$base"
-	tar czf "$1" "deps"
-	generateArtifactHashes "$1"
-  mkdir -p "$2"
-	mv -n "$1" "$2"
-}
-
+## may put following functions to osmo-build.sh
 initBuild() {
 	base="$(pwd)"
 	deps="$base/deps"
@@ -88,7 +80,16 @@ buildDeps() {
 	mkdir "$deps" || true
 	rm -rf "$inst"
 
-	buildProjectDeps
+	genericDeps "osmo-build-dep.sh"
+}
+
+fetchOrBuilAndArchiveDeps() {
+	if [ ! -f "$1" ]; then
+		buildDeps
+		archiveArtifact "$(getArtifactNameByLocalRepos)" "$2"
+	else
+		fetchArtifact "$1"
+	fi
 }
 
 build() {
