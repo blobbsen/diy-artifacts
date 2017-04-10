@@ -2,7 +2,7 @@
 
 set -ex
 #source $(pwd)/contrib/osmo-build.sh
-source $(pwd)/contrib/osmo-artifacts.sh
+source $(pwd)/contrib/osmo-build.sh
 
 genericDeps() {
 
