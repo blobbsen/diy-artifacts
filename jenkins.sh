@@ -36,5 +36,4 @@ buildProject() {
 	"$MAKE" distcheck || cat-testlogs.sh
 }
 
-
-build "openbsc" "useArtifact" #"$1"
+build openbsc
