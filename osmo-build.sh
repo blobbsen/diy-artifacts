@@ -26,15 +26,13 @@ buildDeps() {
 }
 
 build() {
+  # TODO: artifactStore -> envVar
+  ARTIFACT_STORE="/build_bin/artifactStore"
 
+  initBuild
 	export project="$1"
 
-	initBuild
-
-	# TODO: artifactStore -> envVar
-	artifactStore="/build_bin/artifactStore"
-
-  projectArtifactDir="$artifactStore/$project"
+  projectArtifactDir="$ARTIFACT_STORE/$project"
   pathOfNeededArtifact="$projectArtifactDir/$(getArtifactNameByRemoteRepos)"
 
   if [ ! -f "$pathOfNeededArtifact" ]; then
