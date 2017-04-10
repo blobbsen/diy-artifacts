@@ -25,27 +25,23 @@ buildDeps() {
 	genericDeps "osmo-build-dep.sh"
 }
 
-fetchOrBuilAndArchiveDeps() {
-	if [ ! -f "$1" ]; then
-		buildDeps
-		archiveArtifact "$(getArtifactNameByLocalRepos)" "$2"
-	else
-		fetchArtifact "$1"
-	fi
-}
-
 build() {
 
 	export project="$1"
+
 	initBuild
 
-	# TODO: think about whether Docker volume would be suitable + envVar
+	# TODO: artifactStore -> envVar
 	artifactStore="/build_bin/artifactStore"
-
   projectArtifactDir="$artifactStore/$project"
   pathOfNeededArtifact="$projectArtifactDir/$(getArtifactNameByRemoteRepos)"
 
-  fetchOrBuilAndArchiveDeps "$pathOfNeededArtifact" "$projectArtifactDir"
+  if [ ! -f "$pathOfNeededArtifact" ]; then
+    buildDeps
+    archiveArtifact "$(getArtifactNameByLocalRepos)" "$projectArtifactDir"
+  else
+    fetchArtifact "$pathOfNeededArtifact"
+  fi
 
 	set +x
 	echo
