@@ -42,12 +42,14 @@ build() {
 
   initBuild "$1"
 
-  artifactDir="$ARTIFACT_STORE/$project"
-  pathOfNeededArtifact="$artifactDir/$(getArtifactNameByRemoteRepos)"
+	jobArtifactDir="$(echo $JOB_NAME | 's/\//#/g')"
+	neededArtifact="$(getArtifactNameByRemoteRepos)"
+
+  pathOfNeededArtifact="$ARTIFACT_STORE/$jobArtifactDir/$neededArtifact"
 
   if [ ! -f "$pathOfNeededArtifact" ]; then
     buildDeps
-    archiveArtifact "$artifactDir"
+    archiveArtifact "$jobArtifactDir"
   else
     fetchArtifact "$pathOfNeededArtifact"
   fi
