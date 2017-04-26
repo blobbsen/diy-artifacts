@@ -11,15 +11,21 @@ getArtifactNameByRemoteRepos() {
 
 getBranchAndRevByLocalRepo() {
 	cd "$deps/$1"
-	rev=$(git rev-parse HEAD)
+	rev=$(git rev-parse --short HEAD)
 	branch=$(git rev-parse --abbrev-ref HEAD)
-	echo "$1.${branch//\//#}.${rev:0:7}"
+	echo "$1.${branch//\//#}.${rev}"
 }
 
 getBranchAndRevByRemoteRepo() {
 	if [ -z "${2+x}" ]; then branch="master"; else branch="$2"; fi
 	rev=$(git ls-remote "https://git.osmocom.org/$1" "refs/heads/$branch")
 	echo "$1.${branch//\//#}.${rev:0:7}"
+}
+
+addRepoToBuild(){
+	cd $base
+	projectBranch=$(git rev-parse --short HEAD)
+	echo "$project_projectBranch_$1"
 }
 
 archiveArtifact() {
@@ -31,10 +37,21 @@ archiveArtifact() {
 
 	cd "$base"
 	artifact="$(getArtifactNameByLocalRepos)"
-	tar czf "$artifact" "deps"
-	generateArtifactHashes "$artifact"
-  mkdir -p "$artifactDir"
-	mv -n "$artifact" "$artifactDir"
+
+	projectStorage="$ARTIFACT_STORE/$jobArtifactDir"
+	tempProjectStorage="$ARTIFACT_STORE/tmp/$jobArtifactDir"
+
+	if [ ! -f "$tempProjectStorage/$artifact" ]; then
+			mkdir -p "$tempProjectStorage"
+			tar czf "$tempProjectStorage/$artifact" "deps"
+	fi
+
+  mkdir -p "$projectStorage"
+	rm -f "$projectStorage/*"
+	mv -n "$tempProjectStorage/$artifact" "$projectStorage/$artifact"
+	rm -f "$tempProjectStorage/$artifact"
+
+	generateArtifactHashes "$projectStorage/$artifact"
 }
 
 fetchArtifact() {

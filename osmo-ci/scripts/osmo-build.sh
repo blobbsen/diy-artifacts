@@ -42,21 +42,22 @@ build() {
 
   initBuild "$1"
 
+	# Jenkins variable
 	jobArtifactDir="$(echo $JOB_NAME | 's/\//#/g')"
 	neededArtifact="$(getArtifactNameByRemoteRepos)"
 
   pathOfNeededArtifact="$ARTIFACT_STORE/$jobArtifactDir/$neededArtifact"
 
-  if [ ! -f "$pathOfNeededArtifact" ]; then
-    buildDeps
-    archiveArtifact "$jobArtifactDir"
+  if [ -f "$pathOfNeededArtifact" ]; then
+		fetchArtifact "$pathOfNeededArtifact"
   else
-    fetchArtifact "$pathOfNeededArtifact"
+		buildDeps
+		archiveArtifact "$jobArtifactDir"
   fi
 
 	set +x
 	echo
-	echo "[INFO] ======================== $project =========================="
+	echo " ============================= $project =========================="
 	echo
 	set -x
 
