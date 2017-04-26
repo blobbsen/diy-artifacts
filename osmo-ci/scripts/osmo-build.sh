@@ -8,6 +8,9 @@ initBuild() {
 	inst="$deps/install"
   project="$1"
 
+	mkdir "$deps" || true
+	rm -rf "$inst"
+
 	export base deps inst project
 	export PKG_CONFIG_PATH="$inst/lib/pkgconfig:$PKG_CONFIG_PATH"
 	export LD_LIBRARY_PATH="$inst/lib"
@@ -19,9 +22,6 @@ buildDeps() {
 	echo "[INFO] Compile $project dependencies from source."
 	echo
 	set -x
-
-	mkdir "$deps" || true
-	rm -rf "$inst"
 
 	genericDeps "osmo-build-dep.sh"
 }
