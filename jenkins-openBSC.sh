@@ -19,7 +19,7 @@ genericDeps() {
 	fi
 
 	#x="${x}_$(<parallel make> $1 <git-repo> <git-branch:master> <configure>)"
-	finalizeArtifactName "${x}.tar.gz"
+	finalizeArtifactName "$x"
 }
 
 buildProject() {

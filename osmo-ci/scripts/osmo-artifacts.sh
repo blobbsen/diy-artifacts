@@ -29,7 +29,7 @@ getBranchAndRevByRemoteRepo() {
 
 finalizeArtifactName(){
 	finalArtifactName="$(echo $JOB_NAME | 's/\//#/g')"
-	echo "$finalArtifactName"
+	echo "${finalArtifactName}.tar.gz"
 }
 
 # file handling
