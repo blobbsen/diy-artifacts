@@ -18,7 +18,8 @@ genericDeps() {
 		x="${x}_$($1 osmo-iuh)"
 	fi
 
-	echo "${x}.tar.gz"
+	#x="${x}_$(<parallel make> $1 <git-repo> <git-branch:master> <configure>)"
+	finalizeArtifactName "${x}.tar.gz"
 }
 
 buildProject() {
@@ -27,8 +28,9 @@ buildProject() {
 
 	autoreconf --install --force
 
-	./configure --enable-osmo-bsc \
-		--enable-nat "$SMPP" "$MGCP" "$IU" \
+	./configure "$SMPP" "$MGCP" "$IU" \
+		--enable-osmo-bsc \
+		--enable-nat  \
 		--enable-vty-tests \
 	  --enable-enameternal-tests
 
@@ -37,4 +39,4 @@ buildProject() {
 	"$MAKE" distcheck || cat-testlogs.sh
 }
 
-build openbsc
+build
