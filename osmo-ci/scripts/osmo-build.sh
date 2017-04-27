@@ -6,10 +6,11 @@ initBuild() {
 	base="$(pwd)"
 	deps="$base/deps"
 	inst="$deps/install"
-  project="$1"
+  project=$(git config --get --local remote.origin.url \
+			| cut -d '/' -f4 | cut -d '.' -f1)
 
 	mkdir "$deps" || true
-	rm -rf "$inst"
+	rm -rf "$inst" # TODO: check this!
 
 	export base deps inst project
 	export PKG_CONFIG_PATH="$inst/lib/pkgconfig:$PKG_CONFIG_PATH"
@@ -40,12 +41,11 @@ build() {
   	exit 1
   fi
 
-  initBuild "$1"
+	initBuild
 
-	# Jenkins variable
+	# JOB_NAME is an environment variable injected by Jenkins
 	jobArtifactDir="$(echo $JOB_NAME | 's/\//#/g')"
 	neededArtifact="$(getArtifactNameByRemoteRepos)"
-
   pathOfNeededArtifact="$ARTIFACT_STORE/$jobArtifactDir/$neededArtifact"
 
   if [ -f "$pathOfNeededArtifact" ]; then

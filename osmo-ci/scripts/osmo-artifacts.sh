@@ -1,5 +1,10 @@
 #!/bin/bash
+#
+# documentation.
+#
+#
 
+# determining artifact name
 getArtifactNameByLocalRepos(){
 	genericDeps "getBranchAndRevByLocalRepo"
 	cd "$base"
@@ -22,12 +27,12 @@ getBranchAndRevByRemoteRepo() {
 	echo "$1.${branch//\//#}.${rev:0:7}"
 }
 
-addRepoToBuild(){
-	cd $base
-	projectBranch=$(git rev-parse --short HEAD)
-	echo "$project_projectBranch_$1"
+finalizeArtifactName(){
+	finalArtifactName="$(echo $JOB_NAME | 's/\//#/g')"
+	echo "$finalArtifactName"
 }
 
+# file handling
 archiveArtifact() {
 	set +x
 	echo
