@@ -30,17 +30,7 @@ buildDeps() {
 build() {
   # TODO: artifactStore -> envVar
   ARTIFACT_STORE="/build_bin/artifactStore"
-
-  if [ -z "$1" ]; then
-    echo
-    echo "[ERROR] Please pass the name of the project when calling build"
-    echo "        function within your jenkins.sh script e.g.:"
-    echo
-    echo "        build \"openbsc\""
-    echo
-  	exit 1
-  fi
-
+	
 	initBuild
 
 	# JOB_NAME is an environment variable injected by Jenkins
