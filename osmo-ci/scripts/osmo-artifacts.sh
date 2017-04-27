@@ -28,8 +28,7 @@ getBranchAndRevByRemoteRepo() {
 }
 
 finalizeArtifactName(){
-	finalArtifactName="$(echo $JOB_NAME | 's/\//#/g')"
-	echo "${finalArtifactName}.tar.gz"
+	echo "${jobName}_$1.tar.gz"
 }
 
 # file handling
@@ -43,18 +42,14 @@ archiveArtifact() {
 	cd "$base"
 	artifact="$(getArtifactNameByLocalRepos)"
 
-	projectStorage="$ARTIFACT_STORE/$jobArtifactDir"
-	tempProjectStorage="$ARTIFACT_STORE/tmp/$jobArtifactDir"
-
-	if [ ! -f "$tempProjectStorage/$artifact" ]; then
-			mkdir -p "$tempProjectStorage"
-			tar czf "$tempProjectStorage/$artifact" "deps"
+	if [ ! -f "$ARTIFACT_STORE/tmp/$artifact" ]; then
+			mkdir -p "$ARTIFACT_STORE/tmp/"
+			tar czf "$ARTIFACT_STORE/tmp/$artifact" "deps"
 	fi
 
-  mkdir -p "$projectStorage"
-	rm -f "$projectStorage/*"
-	mv -n "$tempProjectStorage/$artifact" "$projectStorage/$artifact"
-	rm -f "$tempProjectStorage/$artifact"
+	rm -f "$ARTIFACT_STORE/$jobName*"
+	mv -n "$ARTIFACT_STORE/tmp/$artifact" "$ARTIFACT_STORE/$artifact"
+	rm -f "$ARTIFACT_STORE/tmp/$jobName*"
 
 	generateArtifactHashes "$projectStorage/$artifact"
 }

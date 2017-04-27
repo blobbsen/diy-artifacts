@@ -6,13 +6,13 @@ initBuild() {
 	base="$(pwd)"
 	deps="$base/deps"
 	inst="$deps/install"
+
   project=$(git config --get --local remote.origin.url \
 			| cut -d '/' -f4 | cut -d '.' -f1)
 
-	mkdir "$deps" || true
-	rm -rf "$inst" # TODO: check this!
+	jobName="$(echo $JOB_NAME | sed 's/\//#/g')"
 
-	export base deps inst project
+	export base deps inst project jobName
 	export PKG_CONFIG_PATH="$inst/lib/pkgconfig:$PKG_CONFIG_PATH"
 	export LD_LIBRARY_PATH="$inst/lib"
 }
@@ -24,25 +24,25 @@ buildDeps() {
 	echo
 	set -x
 
+	mkdir -p "$deps"
+	rm -rf "$inst"
 	genericDeps "osmo-build-dep.sh"
 }
 
 build() {
   # TODO: artifactStore -> envVar
   ARTIFACT_STORE="/build_bin/artifactStore"
-	
+
 	initBuild
 
-	# JOB_NAME is an environment variable injected by Jenkins
-	jobArtifactDir="$(echo $JOB_NAME | 's/\//#/g')"
 	neededArtifact="$(getArtifactNameByRemoteRepos)"
-  pathOfNeededArtifact="$ARTIFACT_STORE/$jobArtifactDir/$neededArtifact"
+  pathOfNeededArtifact="$ARTIFACT_STORE/$neededArtifact"
 
   if [ -f "$pathOfNeededArtifact" ]; then
 		fetchArtifact "$pathOfNeededArtifact"
   else
 		buildDeps
-		archiveArtifact "$jobArtifactDir"
+		archiveArtifact
   fi
 
 	set +x

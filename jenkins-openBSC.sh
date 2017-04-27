@@ -32,7 +32,7 @@ buildProject() {
 		--enable-osmo-bsc \
 		--enable-nat  \
 		--enable-vty-tests \
-	  --enable-enameternal-tests
+	  --enable-external-tests
 
 	"$MAKE" "$PARALLEL_MAKE"
 	"$MAKE" check || cat-testlogs.sh
