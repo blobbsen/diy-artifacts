@@ -36,7 +36,7 @@ build() {
 	initBuild
 
 	neededArtifact="$(getArtifactNameByRemoteRepos)"
-  pathOfNeededArtifact="$ARTIFACT_STORE/$neededArtifact"
+  pathOfNeededArtifact="$ARTIFACT_STORE/$jobName/$neededArtifact"
 
   if [ -f "$pathOfNeededArtifact" ]; then
 		fetchArtifact "$pathOfNeededArtifact"
