@@ -6,7 +6,9 @@ source osmo-build.sh
 genericDeps() {
 
 	x="$($1 libosmocore master ac_cv_path_DOXYGEN=false)"
+	set +ex
 	"$deps"/libosmocore/contrib/verify_value_string_arrays_are_terminated.py $(find . -name "*.[hc]")
+	set -ex
 	x="${x}_$($1 libosmo-abis)"
 	x="${x}_$($1 libosmo-netif)"
 	x="${x}_$($1 libosmo-sccp)"
@@ -19,7 +21,7 @@ genericDeps() {
 	fi
 
 	#x="${x}_$(<parallel make> $1 <git-repo> <git-branch:master> <configure>)"
-	finalizeArtifactName "$x"
+	echo "${x}.tar.gz"
 }
 
 buildProject() {
@@ -34,9 +36,10 @@ buildProject() {
 		--enable-vty-tests \
 	  --enable-external-tests
 
-	"$MAKE" "$PARALLEL_MAKE"
+	"$MAKE" "-j8"
 	"$MAKE" check || cat-testlogs.sh
 	"$MAKE" distcheck || cat-testlogs.sh
 }
 
+export JOB_NAME="openBSC_multi-configuration_withArtifacts_testRefactoring#IU=--disable-iu,MGCP=--enable-mgcp-transcoding,SMPP=--disable-smpp,label=masterSlave"
 build
