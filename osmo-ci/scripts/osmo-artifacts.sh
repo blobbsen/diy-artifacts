@@ -41,7 +41,7 @@ archiveArtifact() {
 			rm -f "$jobStore/*"
 			tar czf "$tempJobStore/$artifact" "deps"
 			mv -n "$tempJobStore/$artifact" "$jobStore/$artifact"
-			rm -f "$tempJobStore/*"
+			rm -f "$tempJobStore"
 
 			generateArtifactHashes "$jobStore/$artifact"
 	fi
