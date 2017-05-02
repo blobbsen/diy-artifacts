@@ -1,10 +1,9 @@
 #!/bin/bash
 #
-# documentation.
 #
 #
 
-# determining artifact name
+# determining artifact name (local & remote)
 getArtifactNameByLocalRepos(){
 	genericDeps "getBranchAndRevByLocalRepo"
 	cd "$base"
