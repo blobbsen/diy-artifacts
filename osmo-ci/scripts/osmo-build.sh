@@ -40,8 +40,6 @@ buildDeps() {
 }
 
 build() {
-  # TODO: artifactStore -> envVar
-  ARTIFACT_STORE="/build_bin/artifactStore"
 
 	initBuild
 
