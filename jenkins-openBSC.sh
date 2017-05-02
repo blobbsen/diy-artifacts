@@ -36,10 +36,10 @@ buildProject() {
 		--enable-vty-tests \
 	  --enable-external-tests
 
-	"$MAKE" "-j8"
+	"$MAKE" "$PARALLEL_MAKE"
 	"$MAKE" check || cat-testlogs.sh
 	"$MAKE" distcheck || cat-testlogs.sh
 }
 
-export JOB_NAME="openBSC_multi-configuration_withArtifacts_testRefactoring#IU=--disable-iu,MGCP=--enable-mgcp-transcoding,SMPP=--disable-smpp,label=masterSlave"
+#export JOB_NAME="openBSC_multi-configuration_withArtifacts_testRefactoring#IU=--disable-iu,MGCP=--enable-mgcp-transcoding,SMPP=--disable-smpp,label=masterSlave"
 build

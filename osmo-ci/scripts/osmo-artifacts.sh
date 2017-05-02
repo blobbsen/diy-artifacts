@@ -1,7 +1,4 @@
 #!/bin/bash
-#
-#
-#
 
 # determining artifact name (local & remote)
 getArtifactNameByLocalRepos(){
@@ -59,16 +56,16 @@ fetchArtifact() {
   set -x
 
   generateArtifactHashes "$1"
-  tar xzf "$1" # "$base"
+  tar xzf "$1"
 }
 
 generateArtifactHashes() {
 	set +x
 	echo
 	echo "[INFO] name: $1"
-	echo "[INFO] md5: $(md5sum "$1" | cut -d' ' -f1)"
-	echo "[INFO] sha1: $(sha1sum "$1" | cut -d' ' -f1)"
-	echo "[INFO] sha256: $(sha256sum "$1" | cut -d' ' -f1)"
+	echo "[INFO] md5: $(md5sum "$1" | cut -d ' ' -f1)"
+	echo "[INFO] sha1: $(sha1sum "$1" | cut -d ' ' -f1)"
+	echo "[INFO] sha256: $(sha256sum "$1" | cut -d ' ' -f1)"
 	echo
 	set -x
 	sleep 1

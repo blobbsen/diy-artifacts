@@ -20,7 +20,7 @@ initBuild() {
   project=$(git config --get --local remote.origin.url \
 			| cut -d '/' -f4 | cut -d '.' -f1)
 
-	jobName="$(echo "$JOB_NAME" | sed 's/\//#/g')"
+	jobName="${JOB_NAME//\//#}"
 
 	export base deps inst project jobName
 	export PKG_CONFIG_PATH="$inst/lib/pkgconfig:$PKG_CONFIG_PATH"
