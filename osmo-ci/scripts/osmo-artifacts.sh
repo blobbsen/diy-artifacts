@@ -38,9 +38,8 @@ archiveArtifact() {
 
 	if [ ! -f "$tempJobStore/$artifact" ]; then
 			mkdir -p "$jobStore" "$tempJobStore"
-			tar czf "$tempJobStore/$artifact" "deps"
-
 			rm -f "$jobStore/*"
+			tar czf "$tempJobStore/$artifact" "deps"
 			mv -n "$tempJobStore/$artifact" "$jobStore/$artifact"
 			rm -f "$tempJobStore/*"
 
