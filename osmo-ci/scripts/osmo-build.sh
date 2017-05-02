@@ -3,6 +3,16 @@
 source osmo-artifacts.sh
 
 initBuild() {
+
+	if [ -z "$JOB_NAME" ]; then
+		set +x
+		echo
+		echo "[ERROR] JOB_NAME variable is not set, running in Jenkins?"
+		echo
+		set -x
+		exit 1
+	fi
+
 	base="$(pwd)"
 	deps="$base/deps"
 	inst="$deps/install"
