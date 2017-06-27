@@ -1,18 +1,17 @@
-#!/bin/bash
+#!/bin/sh -ex
 
-set -ex
-source osmo-build.sh
+artifact_deps() {
 
-genericDeps() {
-
-	x="$($1 libosmocore master ac_cv_path_DOXYGEN=false)"
-	set +ex
-	"$deps"/libosmocore/contrib/verify_value_string_arrays_are_terminated.py $(find . -name "*.[hc]")
-	set -ex
+	x="$($1 libosmocore)"
 	x="${x}_$($1 libosmo-abis)"
 	x="${x}_$($1 libosmo-netif)"
-	x="${x}_$($1 libosmo-sccp)"
-	x="${x}_$(PARALLEL_MAKE=-j1 $1 libsmpp34)"
+
+	if [ "x$IU" = "x--enable-iu" ]; then
+		sccp_branch="old_sua"
+	fi
+
+	x="${x}_$($1 libosmo-sccp "$sccp_branch")"
+	x="${x}_$($1 libsmpp34)"
 	x="${x}_$($1 openggsn)"
 
 	if [ "x$IU" = "x--enable-iu" ]; then
@@ -20,11 +19,32 @@ genericDeps() {
 		x="${x}_$($1 osmo-iuh)"
 	fi
 
-	#x="${x}_$(<parallel make> $1 <git-repo> <git-branch:master> <configure>)"
 	echo "${x}.tar.gz"
 }
 
-buildProject() {
+build_deps() {
+
+	osmo-build-dep.sh libosmocore master ac_cv_path_DOXYGEN=false
+	"$deps"/libosmocore/contrib/verify_value_string_arrays_are_terminated.py $(find . -name "*.[hc]")
+
+	osmo-build-dep.sh libosmo-abis
+	osmo-build-dep.sh libosmo-netif
+
+	if [ "x$IU" = "x--enable-iu" ]; then
+		sccp_branch="old_sua"
+	fi
+
+	osmo-build-dep.sh libosmo-sccp "$sccp_branch"
+	PARALLEL_MAKE=-j1 osmo-build-dep.sh libsmpp34
+	osmo-build-dep.sh openggsn
+
+	if [ "x$IU" = "x--enable-iu" ]; then
+		osmo-build-dep.sh libasn1c
+		osmo-build-dep.sh osmo-iuh
+	fi
+}
+
+build_project() {
 
 	cd "$base/openbsc"
 
@@ -41,5 +61,4 @@ buildProject() {
 	"$MAKE" distcheck || cat-testlogs.sh
 }
 
-#export JOB_NAME="openBSC_multi-configuration_withArtifacts_testRefactoring#IU=--disable-iu,MGCP=--enable-mgcp-transcoding,SMPP=--disable-smpp,label=masterSlave"
-build
+. osmo-build.sh
